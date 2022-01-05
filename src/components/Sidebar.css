@@ -58,4 +58,5 @@
   flex: 1;
   overflow: auto;
   background-color: #fff;
+  border-bottom-left-radius: 16px;
 }

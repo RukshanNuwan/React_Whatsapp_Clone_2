@@ -1,0 +1,103 @@
+.chat {
+  display: flex;
+  flex-direction: column;
+  flex: 0.65;
+}
+
+.chat__header {
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #d3d3d3;
+}
+
+.chat__header_info {
+  padding-left: 20px;
+  flex: 1;
+}
+
+.chat__header_info > h3 {
+  margin-bottom: 3px;
+  font-weight: 500;
+}
+
+.chat__header_info > p {
+  color: #808080;
+}
+
+.chat__header_right {
+  min-width: 100px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.chat__body {
+  flex: 1;
+  padding: 30px;
+  background-image: url("https://am3pap007files.storage.live.com/y4mwaPAQRK8hDMPogzr_glMtPwE92U9BoB74ufEr5HKdRPXXvEGnbe6wEAXDljWwW3VH8gx-zrL-kANDEVYJKkG-iJZ-OnXSRCiik29fqoY-d6phJh0FbYNOdFlJSiGPQ-bjFaOqbWlv9LPlDbyqX95s_YgL23uOQDCNuKd5ycbhdaYKfTVckJ3CWBW4CAazsrMQjpD2ty3su5ajJ6o_66iaw/wp_132.jpg?psid=1&width=294&height=635");
+  background-repeat: repeat;
+  background-position: center;
+  overflow: auto;
+  border-bottom-right-radius: 16px;
+}
+
+.chat__message {
+  position: relative;
+  width: fit-content;
+  padding: 10px;
+  margin-bottom: 15px;
+  font-size: 16px;
+  background-color: #fff;
+  border-radius: 10px;
+}
+
+.chat__receiver {
+  margin-left: auto;
+  background-color: #dcf8c6;
+}
+
+.chat__name {
+  position: absolute;
+  top: -15px;
+  left: 0;
+  font-weight: 800;
+  font-size: xx-small;
+}
+
+.chat__timestamp {
+  margin-left: 10px;
+  font-size: x-small;
+}
+
+.chat__footer {
+  height: 62px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #d3d3d3;
+}
+
+.chat__footer > form {
+  display: flex;
+  flex: 1;
+}
+
+.chat__footer > form > input {
+  padding: 10px;
+  flex: 1;
+  border-radius: 30px;
+  border: none;
+}
+
+.chat__footer > form > input:focus {
+  outline: none;
+}
+
+.chat__footer > form > button {
+  display: none;
+}
+
+.chat__footer > .MuiSvgIcon-root {
+  padding: 10px;
+  color: #808080;
+}
