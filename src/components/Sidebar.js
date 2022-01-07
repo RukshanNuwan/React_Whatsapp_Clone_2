@@ -3,10 +3,12 @@ import {Avatar, IconButton} from '@mui/material';
 import {Chat, DonutLarge, MoreVert, SearchOutlined} from '@mui/icons-material';
 import SidebarChat from "./SidebarChat";
 import {db} from "../firebase";
+import {useStateValue} from "../StateProvider";
 import './Sidebar.css';
 
 const Sidebar = () => {
   const [rooms, setRooms] = useState([]);
+  const [{user}, dispatch] = useStateValue();
 
   useEffect(() => {
     const unsubscribe = db.collection('rooms').onSnapshot((snapshot) => {
@@ -18,13 +20,13 @@ const Sidebar = () => {
 
     return () => {
       unsubscribe();
-    }
+    };
   }, []);
 
   return (
     <div className="sidebar">
       <div className="sidebar__header">
-        <Avatar/>
+        <Avatar src={user?.photoURL}/>
         <div className="sidebar__header_right">
           <IconButton>
             <DonutLarge/>
