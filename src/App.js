@@ -1,4 +1,4 @@
-import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
+import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import Login from "./components/Login";
 import Sidebar from './components/Sidebar';
 import Chat from './components/Chat';
@@ -15,17 +15,11 @@ const App = () => {
       ) : (
         <div className="app__body">
           <Router>
-            <Switch>
-              <Sidebar/>
-
-              <Route path="/rooms/:roomId">
-                <Chat/>
-              </Route>
-
-              <Route path="/">
-                <Chat/>
-              </Route>
-            </Switch>
+            <Sidebar/>
+            <Routes>
+              <Route path="/" element={<Chat/>}/>
+              <Route path="/rooms/:roomId" element={<Chat/>}/>
+            </Routes>
           </Router>
         </div>
       )}

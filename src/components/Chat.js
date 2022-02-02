@@ -4,7 +4,7 @@ import {AttachFile, InsertEmoticon, Mic, MoreVert, SearchOutlined} from "@mui/ic
 import {useParams} from "react-router-dom";
 import {db} from "../firebase";
 import {useStateValue} from "../StateProvider";
-import firebase from "firebase/compat";
+import {addDoc, collection, doc, onSnapshot, query, orderBy, serverTimestamp} from 'firebase/firestore';
 import './Chat.css';
 
 const Chat = () => {
@@ -12,24 +12,26 @@ const Chat = () => {
   const [input, setInput] = useState('');
   const [roomName, setRoomName] = useState('');
   const [messages, setMessages] = useState([]);
+
   const {roomId} = useParams();
+
   const [{user}, dispatch] = useStateValue();
 
   useEffect(() => {
     if (roomId) {
-      db.collection('rooms')
-        .doc(roomId)
-        .onSnapshot((snapshot) => (
-          setRoomName(snapshot.data().name)
-        ));
+      const docRef = doc(db, 'rooms', roomId);
 
-      db.collection('rooms')
-        .doc(roomId)
-        .collection('messages')
-        .orderBy('timestamp', 'asc')
-        .onSnapshot((snapshot) => (
-          setMessages(snapshot.docs.map((doc) => doc.data()))
-        ));
+      onSnapshot(docRef, (snapshot) => {
+        setRoomName(snapshot.data()?.name);
+      });
+
+      const docRefQuery = doc(db, 'rooms', roomId);
+      const colRef = collection(docRefQuery, 'message');
+      const q = query(colRef, orderBy('timestamp', 'asc'));
+
+      onSnapshot(q, (snapshot) => {
+        setMessages(snapshot.docs.map((doc) => doc.data()));
+      });
     }
   }, [roomId]);
 
@@ -40,14 +42,16 @@ const Chat = () => {
   const sendMessage = (e) => {
     e.preventDefault();
 
-    db.collection('rooms')
-      .doc(roomId)
-      .collection('message')
-      .add({
-        message: input,
-        name: user.displayName,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-      });
+    const docRef = doc(db, 'rooms', roomId);
+    const colRef = collection(docRef, 'message');
+
+    addDoc(colRef, {
+      message: input,
+      name: user.displayName,
+      timestamp: serverTimestamp()
+    }).then(() => {
+      console.log('data added');
+    });
 
     setInput('');
   };
@@ -58,7 +62,7 @@ const Chat = () => {
         <Avatar src={`https://avatars.dicebear.com/api/bottts/${randomString}.svg`}/>
         <div className="chat__header_info">
           <h3>{roomName}</h3>
-          <p>Last seen {new Date(messages[messages.length - 1]?.timeStamp?.toDate()).toUTCString()}</p>
+          <p>Last seen {new Date(messages[messages.length - 1]?.timestamp?.toDate()).toUTCString()}</p>
         </div>
         <div className="cat__header_right">
           <IconButton>
@@ -74,8 +78,8 @@ const Chat = () => {
       </div>
 
       <div className="chat__body">
-        {messages.map((message) => (
-          <p className={`chat__message ${message.name === user.displayName && 'chat__receiver'}`}>
+        {messages.map((message, index) => (
+          <p key={index} className={`chat__message ${message.name === user.displayName && 'chat__receiver'}`}>
             <span className="chat__name">{message.name}</span>
             {message.message}
             <span className="chat__timestamp">

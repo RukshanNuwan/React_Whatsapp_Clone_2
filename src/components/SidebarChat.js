@@ -3,6 +3,7 @@ import {Avatar} from "@mui/material";
 import {db} from "../firebase";
 import './SidebarChat.css';
 import {Link} from "react-router-dom";
+import {doc, collection, query, orderBy, onSnapshot, addDoc} from 'firebase/firestore';
 
 const SidebarChat = ({id, name, addNewChat}) => {
   const [randomString, setRandomString] = useState(0);
@@ -14,15 +15,15 @@ const SidebarChat = ({id, name, addNewChat}) => {
 
   useEffect(() => {
     if (id) {
-      db.collection('rooms')
-        .doc(id)
-        .collection('messages')
-        .orderBy('timestamp', 'desc')
-        .onSnapshot((snapshot) => (
-          setMessages(snapshot.docs.map((doc) => (
-            doc.data()
-          )))
-        ));
+      const docRef = doc(db, 'rooms', id);
+      const colRef = collection(docRef, 'message');
+      const q = query(colRef, orderBy('timestamp', 'desc'));
+
+      onSnapshot(q, (snapshot) => (
+        setMessages(snapshot.docs.map((doc) => (
+          doc.data()
+        )))
+      ));
     }
   }, [id]);
 
@@ -30,10 +31,13 @@ const SidebarChat = ({id, name, addNewChat}) => {
     const roomName = prompt('Please enter a name for chat room');
 
     if (roomName) {
-      db.collection('rooms')
-        .add({
-          name: roomName,
-        });
+      const colRef = collection(db, 'rooms');
+
+      addDoc(colRef, {
+        name: roomName
+      }).then(() => {
+        console.log('data added');
+      });
     }
   };
 

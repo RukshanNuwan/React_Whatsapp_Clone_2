@@ -1,20 +1,22 @@
 import {Button} from "@mui/material";
-import {auth, provider} from "../firebase";
+import {auth} from "../firebase";
 import {useStateValue} from "../StateProvider";
 import {actionTypes} from "../reducer";
+import {GoogleAuthProvider, signInWithPopup} from 'firebase/auth';
 import './Login.css';
 
 const Login = () => {
   const [{}, dispatch] = useStateValue();
 
   const signIn = () => {
-    auth.signInWithPopup(provider)
-      .then((result) => {
-        dispatch({
-          type: actionTypes.SET_USER,
-          payload: result.user
-        });
-      }).catch((error) => {
+    const provider = new GoogleAuthProvider();
+
+    signInWithPopup(auth, provider).then((result) => {
+      dispatch({
+        type: actionTypes.SET_USER,
+        payload: result.user
+      });
+    }).catch((error) => {
       alert(error.message());
     });
   };

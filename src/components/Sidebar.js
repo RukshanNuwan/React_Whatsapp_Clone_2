@@ -4,6 +4,7 @@ import {Chat, DonutLarge, MoreVert, SearchOutlined} from '@mui/icons-material';
 import SidebarChat from "./SidebarChat";
 import {db} from "../firebase";
 import {useStateValue} from "../StateProvider";
+import {collection, onSnapshot} from 'firebase/firestore';
 import './Sidebar.css';
 
 const Sidebar = () => {
@@ -11,7 +12,9 @@ const Sidebar = () => {
   const [{user}, dispatch] = useStateValue();
 
   useEffect(() => {
-    const unsubscribe = db.collection('rooms').onSnapshot((snapshot) => {
+    const colRef = collection(db, 'rooms');
+
+    const unsubscribe = onSnapshot(colRef, (snapshot) => {
       setRooms(snapshot.docs.map((doc) => ({
         id: doc.id,
         data: doc.data()
@@ -48,6 +51,7 @@ const Sidebar = () => {
       </div>
 
       <div className="sidebar__chats">
+        <SidebarChat addNewChat/>
         {rooms.map((room) => (
           <SidebarChat
             key={room.id}
